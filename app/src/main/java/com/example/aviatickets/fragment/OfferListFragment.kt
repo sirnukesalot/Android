@@ -8,7 +8,12 @@ import android.view.ViewGroup
 import com.example.aviatickets.R
 import com.example.aviatickets.adapter.OfferListAdapter
 import com.example.aviatickets.databinding.FragmentOfferListBinding
+import com.example.aviatickets.model.network.ApiClient
 import com.example.aviatickets.model.service.FakeService
+import com.example.aviatickets.model.service.OfferAPIresponse
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class OfferListFragment : Fragment() {
@@ -39,7 +44,32 @@ class OfferListFragment : Fragment() {
         setupUI()
         adapter.setItems(FakeService.offerList)
     }
+    val client = ApiClient.instance
+    val response = client.fetchOfferList()
+    response.enqueue(object : Callback<OfferAPIresponse> {
+        override fun onResponse(
+            call: Call<OfferAPIresponse>,
+            response: Response<OfferAPIresponse>
+        ) {
+            println("HttpResponse: ${response.body()}")
 
+            /**
+             * example
+             */
+            val movieList = response.body()?.results
+
+            if (movieList != null) {
+                adapter.setData(
+                )
+            }
+        }
+
+        override fun onFailure(call: Call<OfferAPIresponse>, t: Throwable) {
+            TODO("Not yet implemented")
+        }
+
+
+    })
     private fun setupUI() {
         with(binding) {
             offerList.adapter = adapter
